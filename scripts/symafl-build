@@ -1,0 +1,127 @@
+#!/bin/bash
+#=============================================================================
+# SymAFL Build Script — compile target with RSan SafeStack + SymCC
+#
+# Usage: symafl-build [flags] <source.c> [-o <output>] [extra flags...]
+#
+#   symafl-build read.c -o read
+#   symafl-build -O0 read.c -o read_dbg
+#   symafl-build -O2 -DFOO=1 target.c
+#
+# Notes:
+#   - Always compiles with -flto=full (required for SymCC LTO pass)
+#   - SymCC instrumentation is OFF by default; enable with --symcc
+#   - RSan SafeStack is ON by default; disable with --no-rsan
+#=============================================================================
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+# shellcheck source=symafl-env.sh
+source "$SCRIPT_DIR/symafl-env.sh"
+
+# ---- Defaults ----
+OPT_LEVEL="-O2"
+OUTPUT=""
+SYMCC_MODE=0
+RSAN_MODE=1
+EXTRA_FLAGS=()
+SOURCES=()
+
+# ---- Parse args ----
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -O0|-O1|-O2|-O3|-Os|-Oz) OPT_LEVEL="$1"; shift ;;
+        -o)
+            [[ $# -ge 2 ]] || { echo "Error: -o requires an argument." >&2; exit 1; }
+            OUTPUT="$2"
+            shift 2
+            ;;
+        --symcc)
+            SYMCC_MODE=1
+            shift
+            ;;
+        --no-rsan)
+            RSAN_MODE=0
+            shift
+            ;;
+        -h|--help)
+            echo "Usage: $0 [flags] <source.c...> [-o <output>]"
+            echo ""
+            echo "Flags:"
+            echo "  -O0..-Oz   Optimization level (default: -O2)"
+            echo "  -o <file>  Output binary name"
+            echo "  --symcc     Enable SymCC symbolic execution instrumentation"
+            echo "  --no-rsan   Disable RSan SafeStack (use plain RSan clang)"
+            echo "  -h, --help  Show this help"
+            echo ""
+            echo "Examples:"
+            echo "  $0 read.c -o read              # RSan only (no SymCC)"
+            echo "  $0 --symcc read.c -o read      # RSan + SymCC"
+            echo "  $0 --no-rsan read.c -o read    # Neither RSan nor SymCC"
+            exit 0
+            ;;
+        *.c|*.cpp|*.cc|*.cxx)
+            SOURCES+=("$1")
+            shift
+            ;;
+        *)
+            EXTRA_FLAGS+=("$1")
+            shift
+            ;;
+    esac
+done
+
+if [[ ${#SOURCES[@]} -eq 0 ]]; then
+    echo "Error: no source files specified." >&2
+    echo "Usage: $0 [flags] <source.c...> [-o <output>]" >&2
+    exit 1
+fi
+
+# ---- Preflight validation ----
+[[ -x "${RSAN_C}" ]] || { echo "Error: RSan clang not executable: ${RSAN_C}" >&2; exit 1; }
+if [[ $RSAN_MODE -eq 1 ]]; then
+    [[ -e "${RSAN_LDS}" ]] || { echo "Error: linker script missing: ${RSAN_LDS}" >&2; exit 1; }
+    [[ -e "${RSAN_PLD}" ]] || { echo "Error: dynamic linker missing: ${RSAN_PLD}" >&2; exit 1; }
+    [[ -d "${RSAN_TC}/lib" ]] || { echo "Error: TCMalloc lib dir missing: ${RSAN_TC}/lib" >&2; exit 1; }
+fi
+if [[ $SYMCC_MODE -eq 1 ]]; then
+    [[ -e "${RT_DIR}/libsymcc-rt.a" || -e "${RT_DIR}/libsymcc-rt.so" ]] \
+        || { echo "Error: symcc runtime library not found in: ${RT_DIR}" >&2; exit 1; }
+fi
+
+# Auto-derive output name
+if [[ -z "$OUTPUT" ]]; then
+    BASE=$(basename "${SOURCES[0]}")
+    BASE=${BASE%.*}
+    if [[ $SYMCC_MODE -eq 1 ]]; then
+        OUTPUT="${BASE}-symafl"
+    else
+        OUTPUT="${BASE}-rsan"
+    fi
+fi
+
+# ---- Build command ----
+CMD=("${RSAN_C}" "$OPT_LEVEL" -g
+     -fno-builtin-malloc -fno-builtin-calloc
+     -fno-builtin-realloc -fno-builtin-free
+     -flto=full -fuse-ld=lld -no-pie)
+
+if [[ $RSAN_MODE -eq 1 ]]; then
+    CMD+=(-fsanitize=safe-stack
+          -T "${RSAN_LDS}" -z max-page-size=0x1000
+          -Wl,--dynamic-linker="${RSAN_PLD}"
+          -L"${RSAN_TC}/lib" -Wl,-rpath,"${RSAN_TC}/lib"
+          -ltcmalloc_minimal)
+fi
+
+if [[ $SYMCC_MODE -eq 1 ]]; then
+    CMD+=(-Wl,-plugin-opt=-enable-symcc
+          -L"${RT_DIR}" -lsymcc-rt -lz3 -lpthread -ldl
+          -Wl,-rpath,"${RT_DIR}")
+fi
+
+CMD+=("${SOURCES[@]}" "${EXTRA_FLAGS[@]}" -o "$OUTPUT")
+
+echo "Building: ${CMD[*]}"
+"${CMD[@]}"
+echo "Done: $OUTPUT ($(du -h "$OUTPUT" | cut -f1))"

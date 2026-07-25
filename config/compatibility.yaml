@@ -1,0 +1,58 @@
+#=============================================================================
+# SymAFL cross-component compatibility manifest
+#
+# This file is the authoritative declaration of which component revisions
+# form a compatible SymAFL toolchain, and which cross-component contracts
+# they must satisfy. The component `commit` values MUST equal the gitlink
+# SHAs recorded by the superproject's submodules (verified in CI).
+#
+# Bump `protocol_version` / `trace_format_version` whenever the matching
+# contract changes, and add an integration test for the new behavior.
+#=============================================================================
+
+schema_version: 1
+symafl_version: 0.1.0
+protocol_version: symafl-abi-v1
+trace_format_version: pct-smtlib-v1
+
+platform:
+  architecture: x86_64
+  operating_system: linux
+  llvm_version: "16.0.6"
+  runtime_backend: qsym
+
+components:
+  aflplusplus:
+    repository: explorerlxy/SymAFL-AFLplusplus
+    commit: "7a995cb80e85ab02bd1b113e151f3bd45a6cd8c5"   # must equal submodule gitlink SHA
+    pcbt_api: pcbt-api-v1
+  rsan:
+    repository: explorerlxy/SymAFL-RSan
+    commit: "3403b14dbf0b6aac9b50707e11e017ebfe3bdc4f"
+    compiler_contract: rsan-symcc-lto-v1
+  symcc:
+    repository: explorerlxy/SymAFL-Symcc
+    commit: "a5fa08587a4d4a24a5c90a26dbddbcc75261fcf6"
+    runtime_contract: qsym-shm-v1
+
+contracts:
+  required_lto_flags:
+    - -flto=full
+    - -Wl,-plugin-opt=-enable-symcc
+  pass_pipeline:
+    - SafeStackLegacyPass
+    - SymbolizeLegacyPass
+    - StackProtectorPass
+  shared_memory_channels:
+    - __AFL_SHM_ID                  # coverage bitmap (__afl_area_ptr)
+    - __AFL_SHM_OUTDIR_ENV_ID       # AFL output directory (__out_dir)
+    - __AFL_SHM_SYMBOLIC_ENV_ID     # concrete/symbolic switch (__symbolic)
+    - __AFL_SHM_QUEUE_ENTRY_ID      # current queue entry (__queue_entry_id)
+    - __AFL_SHM_INSERT_DEPTH__ID    # first new constraint (__insert_depth); spelling intentional
+  trace_artifact: queue/.pct-<queue-entry-id>
+  insert_depth_semantics: first-new-solver-assertion-index
+  check_input_return_values:
+    "0":  no PCBT root yet; candidate initializes exploration
+    ">0": unexplored branch found; value is the insertion depth
+    "-1": candidate opens no new branch; skip concrete execution
+    "-2": exploration exhausted; finalize PCBT and leave screening mode

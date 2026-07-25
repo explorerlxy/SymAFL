@@ -1,0 +1,154 @@
+#!/bin/bash
+#=============================================================================
+# SymAFL Fuzz Script — launch AFL++ with SymAFL (-K) mode
+#
+# Usage: symafl-fuzz <target> [seeds_dir] [output_dir] [afl-flags...]
+#
+#   symafl-fuzz ./read                          # auto seeds + output
+#   symafl-fuzz ./read my_seeds                 # custom seeds
+#   symafl-fuzz ./read my_seeds my_output       # custom seeds + output
+#   symafl-fuzz ./read my_seeds my_output -t 2000+   # extra AFL flags
+#
+# Extra AFL flags (anything starting with '-', plus their values) must come
+# AFTER the positional arguments and are passed to afl-fuzz verbatim.
+#=============================================================================
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+# shellcheck source=symafl-env.sh
+source "$SCRIPT_DIR/symafl-env.sh"
+
+TARGET=""
+SEEDS_DIR=""
+OUTPUT_DIR=""
+EXTRA_FLAGS=()
+USER_SET_K=0
+
+# ---- Parse args: positionals first; from the first '-' flag onward, keep verbatim ----
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -h|--help)
+            echo "Usage: $0 <target_binary> [seeds_dir] [output_dir] [afl-flags...]"
+            echo ""
+            echo "SymAFL Fuzzing — RSan SafeStack + SymCC symbolic execution + AFL++"
+            echo ""
+            echo "Arguments:"
+            echo "  target_binary   Path to SymAFL-compiled binary"
+            echo "  seeds_dir       Input seeds directory (default: <target_dir>/seeds)"
+            echo "  output_dir      AFL output directory (default: \$SYMAFL_OUTDIR_BASE/<name>)"
+            echo ""
+            echo "AFL flags (after positionals, passed through verbatim):"
+            echo "  -t <timeout>    Execution timeout (default: 1000+)"
+            echo "  -K[count]       SymCC/PCBT mode (added by default; your -K overrides)"
+            echo "  -m <limit>      Memory limit (default: none)"
+            echo ""
+            echo "Examples:"
+            echo "  $0 ./read"
+            echo "  $0 ./read seeds/ /tmp/out -t 2000+"
+            echo "  $0 ./read seeds/ /tmp/out -K2048"
+            exit 0
+            ;;
+        -*)
+            # From here on, everything is passed to afl-fuzz verbatim.
+            while [[ $# -gt 0 ]]; do
+                [[ "$1" == "-K" || "$1" == -K* ]] && USER_SET_K=1
+                EXTRA_FLAGS+=("$1")
+                shift
+            done
+            ;;
+        *)
+            if [[ -z "$TARGET" ]]; then
+                TARGET="$1"
+            elif [[ -z "$SEEDS_DIR" ]]; then
+                SEEDS_DIR="$1"
+            elif [[ -z "$OUTPUT_DIR" ]]; then
+                OUTPUT_DIR="$1"
+            else
+                echo "Error: unexpected extra positional argument: $1" >&2
+                echo "Put AFL flags (starting with '-') after the positionals." >&2
+                exit 1
+            fi
+            shift
+            ;;
+    esac
+done
+
+# ---- Validate ----
+if [[ -z "$TARGET" ]]; then
+    echo "Error: no target binary specified." >&2
+    echo "Usage: $0 <target_binary> [seeds_dir] [output_dir]" >&2
+    exit 1
+fi
+
+if [[ ! -x "$TARGET" ]]; then
+    echo "Error: target not found or not executable: $TARGET" >&2
+    exit 1
+fi
+
+AFL_FUZZ="${AFL_PATH}/afl-fuzz"
+if [[ ! -x "$AFL_FUZZ" ]]; then
+    echo "Error: afl-fuzz not found or not executable: $AFL_FUZZ" >&2
+    echo "Build AFL++ first (gmake -C \"$AFL_PATH\")." >&2
+    exit 1
+fi
+
+TARGET_NAME=$(basename "$TARGET")
+TARGET_DIR=$(cd -- "$(dirname -- "$TARGET")" && pwd -P)
+TARGET_PATH="$TARGET_DIR/$TARGET_NAME"
+
+# ---- Auto seeds ----
+if [[ -z "$SEEDS_DIR" ]]; then
+    SEEDS_DIR="$TARGET_DIR/seeds"
+fi
+mkdir -p "$SEEDS_DIR"
+
+# Create a seed if the directory is empty
+if [[ -z "$(ls -A "$SEEDS_DIR" 2>/dev/null)" ]]; then
+    python3 -c "print('a'*16, end='')" > "$SEEDS_DIR/seed1"
+    echo "Auto-created seed: $SEEDS_DIR/seed1 (16 bytes of 'a')"
+fi
+
+# ---- Output dir (must be on ext4/xfs, not NTFS) ----
+if [[ -z "$OUTPUT_DIR" ]]; then
+    OUTPUT_DIR="${SYMAFL_OUTDIR_BASE}/$TARGET_NAME"
+fi
+mkdir -p "$OUTPUT_DIR"
+
+# Convert relative paths to absolute
+SEEDS_DIR=$(cd -- "$SEEDS_DIR" && pwd -P)
+OUTPUT_DIR=$(cd -- "$OUTPUT_DIR" && pwd -P)
+
+# Refuse to write AFL output inside the source tree (keeps repos clean)
+if [[ "$OUTPUT_DIR" == "${SYMAFL_ROOT}"/* ]]; then
+    echo "Error: output directory is inside the SymAFL source tree: $OUTPUT_DIR" >&2
+    echo "Use an external path (e.g. under \$SYMAFL_OUTDIR_BASE=${SYMAFL_OUTDIR_BASE})." >&2
+    exit 1
+fi
+
+# ---- Build AFL command ----
+AFL_FLAGS=(
+    -i "$SEEDS_DIR"
+    -o "$OUTPUT_DIR"
+    -m none
+    -t 1000+
+)
+if [[ $USER_SET_K -eq 0 ]]; then
+    AFL_FLAGS+=(-K)
+fi
+
+echo "======================================================================"
+echo " SymAFL Fuzzing"
+echo "======================================================================"
+echo " Target:   $TARGET_PATH"
+echo " Seeds:    $SEEDS_DIR ($(ls "$SEEDS_DIR" | wc -l) files)"
+echo " Output:   $OUTPUT_DIR"
+if [[ $USER_SET_K -eq 0 ]]; then
+    echo " SymCC:    -K (PathConTree enabled)"
+else
+    echo " SymCC:    user-specified -K flag in extra flags"
+fi
+echo "======================================================================"
+echo ""
+
+cd "$TARGET_DIR"
+exec "$AFL_FUZZ" "${AFL_FLAGS[@]}" "${EXTRA_FLAGS[@]}" -- "$TARGET_PATH"

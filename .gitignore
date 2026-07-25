@@ -1,0 +1,33 @@
+#=============================================================================
+# SymAFL integration repository — ignore rules
+# Component subtrees (AFLplusplus/, RSan/, symcc/) are git submodules and
+# carry their own .gitignore; the rules below protect the integration layer.
+#=============================================================================
+
+# ---- Local build trees ----
+build/
+llvm-build/
+
+# ---- AFL / SymAFL runtime output ----
+afl-out/
+outputs/
+queue/
+crashes/
+hangs/
+.pct-*
+.PathConTree-*
+sym_mode_stats
+
+# ---- Experiment data: track manifests/summaries, never raw output ----
+results/raw/
+
+# ---- Compiled test fixtures (rebuild with scripts/symafl-build) ----
+tests/fixtures/**/build/
+tests/fixtures/**/*.o
+
+# ---- Local environment / editors ----
+.env
+.vscode/
+.idea/
+__pycache__/
+*.pyc

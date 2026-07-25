@@ -1,0 +1,12 @@
+[submodule "AFLplusplus"]
+	path = AFLplusplus
+	url = git@github.com:explorerlxy/SymAFL-AFLplusplus.git
+	branch = main
+[submodule "RSan"]
+	path = RSan
+	url = git@github.com:explorerlxy/SymAFL-RSan.git
+	branch = main
+[submodule "symcc"]
+	path = symcc
+	url = git@github.com:explorerlxy/SymAFL-Symcc.git
+	branch = main
