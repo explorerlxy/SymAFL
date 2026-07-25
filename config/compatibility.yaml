@@ -28,11 +28,11 @@ components:
     pcbt_api: pcbt-api-v1
   rsan:
     repository: explorerlxy/SymAFL-RSan
-    commit: "3403b14dbf0b6aac9b50707e11e017ebfe3bdc4f"
+    commit: "98cba4e44f7ade7caf18f6dd5c43891bf75d7216"
     compiler_contract: rsan-symcc-lto-v1
   symcc:
     repository: explorerlxy/SymAFL-Symcc
-    commit: "a5fa08587a4d4a24a5c90a26dbddbcc75261fcf6"
+    commit: "7b02256aef4892a013c5ee50f8806c66a3c2f6f6"
     runtime_contract: qsym-shm-v1
 
 contracts:

@@ -153,6 +153,9 @@ git update-index --chmod=+x scripts/<script>
 
 # 加载环境（自定位，无需 export SYMAFL_ROOT）
 source scripts/symafl-env.sh
+
+# 全量构建三子系统（幂等，按依赖顺序 rsan → symcc → aflpp；可单独构建）
+scripts/build-all.sh            # 或 scripts/build-all.sh rsan|symcc|aflpp
 ```
 
 > ⚠️ NTFS 检出上 `git clone --recurse-submodules` 默认会把 AFL++ 上游的 9 个重型
@@ -386,7 +389,7 @@ git ls-files | grep -E '(^|/)(CMakeFiles|build|afl-out|tmp)(/|$)|\.(o|a|so)$' | 
 | 债务 | 位置 | 建议处理时机 |
 |---|---|---|
 | symcc runtime `main` 基于 symcc-rt@892f817，落后 upstream main 2 个提交 | SymAFL-Symcc | 首次 upstream-sync 时合并 |
-| 新克隆中 LLVM/TCMalloc/pld.so/QSYM runtime 需从零重建（数小时） | RSan | 空闲时段执行 `RSan/install-all.sh`，之后集成 CI 缓存 |
+| 新克隆中 LLVM/TCMalloc/pld.so/QSYM runtime 需从零重建（数小时） | RSan | 空闲时段执行 `scripts/build-all.sh rsan symcc`，之后集成 CI 缓存 |
 | `symafl_runner`（独立 SHM 包装器）未迁入仓库 | 旧工作区 | Paper A 实验需要时补入 `scripts/` |
 | AFL++ 上游 9 个重型 submodule 未初始化 | AFLplusplus | 仅开发 qemu/unicorn/nyx 模式时按需初始化 |
 | `docs/SymAFL_TESTING_WORKFLOW.md` 中部分路径仍为旧布局 | docs/ | 下次文档更新时统一修订 |
