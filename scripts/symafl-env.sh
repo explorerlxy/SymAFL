@@ -30,7 +30,9 @@ export RSAN_LDS="${RSAN_LDS:-$SYMAFL_ROOT/RSan/linker-implicit/globals/linkgloba
 export RSAN_PLD="${RSAN_PLD:-$SYMAFL_ROOT/RSan/linker-implicit/libdl/pld.so}"
 
 # ---- SymCC QSYM Runtime (LLVM 16 build) ----
-export RT_DIR="${RT_DIR:-$SYMAFL_ROOT/symcc/qsym64build/lib}"
+# runtime/CMakeLists.txt sets the output dir to the build tree root, so the
+# libraries land directly in qsym64build/ (not qsym64build/lib).
+export RT_DIR="${RT_DIR:-$SYMAFL_ROOT/symcc/qsym64build}"
 
 # ---- AFL++ ----
 export AFL_PATH="${AFL_PATH:-$SYMAFL_ROOT/AFLplusplus}"

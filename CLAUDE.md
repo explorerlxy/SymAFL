@@ -98,6 +98,18 @@ source env.sh
 ./install-all.sh
 ```
 
+### Build All Three Subsystems (one command)
+
+```bash
+scripts/build-all.sh            # rsan -> symcc -> aflpp, in dependency order
+scripts/build-all.sh rsan       # or build a single subsystem: rsan | symcc | aflpp
+scripts/build-all.sh rsan symcc # or list several targets explicitly
+```
+
+Each stage is idempotent (ninja/make/incremental guards) and verifies its own
+output (e.g. SymCC pass present in `libLLVMCodeGen.a`). `symcc` requires the
+RSan clang, so it must come after `rsan`.
+
 ### Build SymCC Runtime
 
 **QSYM backend** (recommended — full features: path pruning, `.pct` persistence, deduplication):
@@ -220,6 +232,7 @@ After making changes, verify:
 | Pass pipeline order | `RSan/llvm-project-16/llvm/lib/CodeGen/TargetPassConfig.cpp:addISelPrepare()` |
 | RSan SafeStack pointer tagging (tag bits, base loc) | `RSan/llvm-project-16/llvm/lib/CodeGen/SafeStack.cpp` |
 | Runtime — forkserver, SHM, reset_gconfig() | `symcc/runtime/src/backends/qsym/Runtime.cpp` |
+| Build orchestrator (all subsystems) | `scripts/build-all.sh` |
 | Build script (one-command compile) | `scripts/symafl-build` |
 | Fuzz script (one-command AFL++) | `scripts/symafl-fuzz` |
 | Env vars (`RSAN_C`, `RT_DIR`, `AFL_PATH`, etc.) | `scripts/symafl-env.sh` |
