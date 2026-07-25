@@ -196,15 +196,22 @@ afl-fuzz -i seeds -o /tmp/output -K -m none -t 1000+ -- ./target
 
 ### Run Standalone (without AFL++)
 
-```bash
-# Concrete mode (RSan only)
-./symafl_runner ./target-symafl 20
+The QSYM runtime attaches five SysV SHM segments whose IDs it reads from
+`__AFL_SHM_ID`, `__AFL_SHM_OUTDIR_ENV_ID`, `__AFL_SHM_SYMBOLIC_ENV_ID`,
+`__AFL_SHM_QUEUE_ENTRY_ID`, and `__AFL_SHM_INSERT_DEPTH__ID`. Without them the
+attach calls are no-ops and the binary falls back to its static
+`__afl_area_initial` bitmap; without fd 198/199 the forkserver handshake is
+skipped, so the target **can be executed directly**:
 
-# Symbolic mode (Z3 path exploration)
-echo "AAAA" | ./symafl_runner -s ./target-symafl
+```bash
+echo "AAAA" | ./target-symafl
 ```
 
-`symafl_runner` pre-creates the SHM segments that the SymCC runtime's forkserver expects. Not needed when running under AFL++.
+Caveats of running without SHM providers: the mode defaults to whatever
+`g_config` ships with (no concrete/symbolic switching via `*__symbolic`), and
+`.pct-*` persistence has no valid `__out_dir`. For any real validation use
+`symafl-fuzz` (AFL++ creates the SHM channels itself); a standalone wrapper
+(`symafl_runner`, referenced by older docs) is not part of this repository.
 
 ## Testing Checklist
 
