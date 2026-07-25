@@ -1,5 +1,16 @@
 # SymAFL GitHub 仓库迁移检查清单
 
+> **✅ 迁移已于 2026-07-25 完成。以下为计划原文；实际执行与计划的差异记录于此：**
+>
+> 1. **实际仓库名**：`SymAFL`（集成）、`SymAFL-AFLplusplus`、`SymAFL-RSan`、`SymAFL-Symcc`（均为 private）。
+> 2. **symcc 已平直化**：symcc-rt 与 qsym 未使用独立 fork，而是 vendor 进 `SymAFL-Symcc`（提交信息含溯源 SHA；排除 `third_party/z3` 与 200MB Intel Pin 工具链）。因此无需 `SymAFL-Symcc-rt` / `SymAFL-Qsym` 仓库。
+> 3. **NTFS/fuseblk 注意事项**：源码盘为 NTFS，`chmod` 无效，三个组件仓库均已设置 `core.filemode=false`；superproject 中脚本可执行位用 `git update-index --chmod=+x` 显式登记。
+> 4. **AFL++ 额外清理**：`tmp/`（410 个 VS Code Remote 缓存）与 `pctTest`（本地二进制）已取消追踪；`GNUmakefile`（`-L.`）与 `src/afl-fuzz-init.c`（outdir SHM `strcpy`）两个真实修复已单独成提交保留。
+> 5. **备份位置**：`/media/hahafish/Data/ForUbuntu/backup/SymAFL/`（含完整工作区副本、bundles、嵌套 gitdir、证据与 checksums）。
+> 6. **基线 SHA**：AFLplusplus `7a995cb8`、RSan `3403b14db`、symcc `a5fa0858`，superproject 基线见 `config/compatibility.yaml`；端到端冒烟（fixture 构建 + `afl-fuzz -K` + `.pct-*` 产出）已通过。
+>
+> ---
+>
 > **目标**：将当前三个独立开发仓库（AFL++、RSan、SymCC）与根目录的集成脚本、测试和文档组织为“**三个组件 fork + 一个 SymAFL 集成仓库（Git submodule manifest）**”。
 >
 > **迁移原则**：先保护已有历史和实验资产，再建立干净基线；先验证跨模块组合，再冻结论文/实验版本。禁止把本地构建目录、AFL 输出、临时队列和权限位漂移误作为源码成果提交。
