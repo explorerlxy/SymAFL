@@ -1,0 +1,2 @@
+2c7bbb5024f5912e3cf55489b0d005f3c2ef239ffaed5bf6f501bcee72489737  /media/hahafish/Data/ForUbuntu/test/Realworld/zstd/seeds/malformed
+f628c5d74c97aad9350a63bc44cd30ed42facda5f043b480a32aa4acc01a9be1  /media/hahafish/Data/ForUbuntu/test/Realworld/zstd/seeds/valid

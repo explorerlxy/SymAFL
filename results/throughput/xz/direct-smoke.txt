@@ -1,0 +1,2 @@
+valid_rc=0
+malformed_rc=1

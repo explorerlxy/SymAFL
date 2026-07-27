@@ -1,0 +1,117 @@
+[1;92m[+] [0mEnabled environment variable AFL_SKIP_BIN_CHECK with value 1[0m
+[1;92m[+] [0mEnabled environment variable AFL_SKIP_CPUFREQ with value 1[0m
+[1;92m[+] [0mEnabled environment variable AFL_NO_UI with value 1[0m
+[0;36mafl-fuzz++4.32c[0m based on afl by Michal Zalewski and a large online community
+[1;94m[*] [0mSetup SymCC Mode...[0m
+[1;94m[*] [0mSymCC Mode Begin...[0m
+[1;92m[+] [0mAFL++ is maintained by Marc "van Hauser" Heuse, Dominik Maier, Andrea Fioraldi and Heiko "hexcoder" Eißfeldt[0m
+[1;92m[+] [0mAFL++ is open source, get it at https://github.com/AFLplusplus/AFLplusplus[0m
+[1;92m[+] [0mNOTE: AFL++ >= v3 has changed defaults and behaviours - see README.md[0m
+[1;94m[*] [0mGetting to work...[0m
+[1;92m[+] [0mUsing exploration-based constant power schedule (EXPLORE)[0m
+[1;92m[+] [0mEnabled testcache with 50 MB[0m
+[1;92m[+] [0mGenerating fuzz data with a length of min=1 max=1048576[0m
+[1;94m[*] [0mChecking core_pattern...[0m
+[1;92m[+] [0mDisabling the UI because AFL_NO_UI is set.[0m
+[1;92m[+] [0mYou have 14 CPU cores and 1 runnable tasks (utilization: 7%).[0m
+[1;92m[+] [0mTry parallel jobs - see docs/fuzzing_in_depth.md#c-using-multiple-cores[0m
+[1;94m[*] [0mSetting up output directories...[0m
+[1;94m[*] [0mChecking CPU core loadout...[0m
+[1;92m[+] [0mFound a free CPU core, try binding to #0.[0m
+[1;93m[!] [1;97mWARNING: [0mno -M main node found. It is recommended to run exactly one main instance.[0m
+[1;94m[*] [0mValidating target binary...[0m
+[1;94m[*] [0mScanning '/media/hahafish/Data/ForUbuntu/test/Realworld/libxml2/seeds'...[0m
+[1;94m[*] [0mCreating hard links for all input files...[0m
+[1;92m[+] [0mLoaded a total of 2 seeds.[0m
+[1;94m[*] [0mNo auto-generated dictionary tokens to reuse.[0m
+[1;94m[*] [0mAttempting dry run with 'id:000000,time:0,execs:0,orig:malformed'...[0m
+[1;94m[*] [0mSpinning up the fork server...[0m
+[1;93m[!] [1;97mWARNING: [0mOld fork server model is used by the target, this still works though.[0m
+[1;92m[+] [0mAll right - old fork server is up.[0m
+[1;90m    len = 16, map size = 7648, exec speed = 3207 us, hash = 7296a3c2a64df0bc
+[0m[1;94m[*] [0mAttempting dry run with 'id:000001,time:0,execs:0,orig:valid'...[0m
+[1;90m    len = 30, map size = 8388, exec speed = 3294 us, hash = ec99c2462f9eb030
+[0m[1;92m[+] [0mAll test cases processed.[0m
+[1;92m[+] [0mHere are some useful stats:
+
+[1;90m    Test case count : [0m2 favored, 0 variable, 0 ignored, 2 total
+[1;90m       Bitmap range : [0m7648 to 8388 bits (average: 8018.00 bits)
+[1;90m        Exec timing : [0m3207 to 3294 us (average: 3251 us)
+[0m
+[1;94m[*] [0m-t option specified. We'll use an exec timeout of 2000 ms.[0m
+[1;92m[+] [0mAll set and ready to roll![0m
+[1;94m[*] [0mEntering queue cycle 1
+[0m
+[1;94m[*] [0mFuzzing test case #0 (2 total, 0 crashes saved, state: started :-), mode=explore, perf_score=100, weight=1, favorite=1, was_fuzzed=0, exec_us=3207, hits=0, map=7648, ascii=0, run_time=0:00:00:00)...[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000002,src:000000,time:23,execs:17,op:quick,pos:0,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000003,src:000000,time:72,execs:30,op:quick,pos:1,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000004,src:000000,time:134,execs:43,op:quick,pos:2,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000005,src:000000,time:204,execs:56,op:quick,pos:3,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000006,src:000000,time:275,execs:69,op:quick,pos:4[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000007,src:000000,time:336,execs:82,op:quick,pos:5[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000008,src:000000,time:398,execs:95,op:quick,pos:6,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000009,src:000000,time:477,execs:108,op:quick,pos:8,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000010,src:000000,time:557,execs:121,op:quick,pos:9,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000011,src:000000,time:637,execs:134,op:quick,pos:10,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000012,src:000000,time:745,execs:148,op:quick,pos:12,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000013,src:000000,time:828,execs:161,op:quick,pos:13,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000014,src:000000,time:955,execs:175,op:quick,pos:15,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000015,src:000000,time:1109,execs:196,op:flip1,pos:1,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000016,src:000000,time:1293,execs:213,op:flip1,pos:2,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000017,src:000000,time:1569,execs:233,op:flip1,pos:3[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000018,src:000000,time:1948,execs:256,op:flip1,pos:4[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000019,src:000000,time:2156,execs:274,op:flip1,pos:5,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000020,src:000000,time:2276,execs:289,op:flip1,pos:5,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000021,src:000000,time:2387,execs:304,op:flip1,pos:6[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000022,src:000000,time:2448,execs:317,op:flip1,pos:6[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000023,src:000000,time:3732,execs:369,op:flip1,pos:13[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000024,src:000000,time:3999,execs:388,op:flip1,pos:15[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000025,src:000000,time:4104,execs:402,op:flip1,pos:15,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000026,src:000000,time:4185,execs:415,op:flip1,pos:15,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000027,src:000000,time:4305,execs:429,op:flip1,pos:15,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000028,src:000000,time:4377,execs:442,op:flip1,pos:15,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000029,src:000000,time:4535,execs:464,op:flip2,pos:1[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000030,src:000000,time:4988,execs:490,op:flip2,pos:3[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000031,src:000000,time:5286,execs:510,op:flip2,pos:4[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000032,src:000000,time:5581,execs:530,op:flip2,pos:5[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000033,src:000000,time:5802,execs:550,op:flip2,pos:6[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000034,src:000000,time:6004,execs:569,op:flip2,pos:6,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000035,src:000000,time:6113,execs:583,op:flip2,pos:8,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000036,src:000000,time:6663,execs:610,op:flip2,pos:10[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000037,src:000000,time:6978,execs:630,op:flip2,pos:12[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000038,src:000000,time:7299,execs:650,op:flip2,pos:13[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000039,src:000000,time:7370,execs:663,op:flip2,pos:13[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000040,src:000000,time:7755,execs:685,op:flip2,pos:15,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000041,src:000000,time:7838,execs:698,op:flip2,pos:15,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000042,src:000000,time:7979,execs:715,op:flip4,pos:0,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000043,src:000000,time:8088,execs:734,op:flip4,pos:1,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000044,src:000000,time:8496,execs:759,op:flip4,pos:2,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000045,src:000000,time:8893,execs:783,op:flip4,pos:4,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000046,src:000000,time:9169,execs:803,op:flip4,pos:5,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000047,src:000000,time:9383,execs:822,op:flip4,pos:6,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000048,src:000000,time:10079,execs:854,op:flip4,pos:9,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000049,src:000000,time:10418,execs:874,op:flip4,pos:10[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000050,src:000000,time:11091,execs:902,op:flip4,pos:13[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000051,src:000000,time:11974,execs:939,op:flip16,pos:5,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000052,src:000000,time:12040,execs:952,op:flip16,pos:6,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000053,src:000000,time:12119,execs:965,op:flip16,pos:8[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000054,src:000000,time:12489,execs:987,op:flip32,pos:5[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000055,src:000000,time:12556,execs:1000,op:flip32,pos:6[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000056,src:000000,time:12634,execs:1013,op:flip32,pos:8[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000057,src:000000,time:12998,execs:1050,op:arith8,pos:0,val:+16,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000058,src:000000,time:13964,execs:1120,op:arith8,pos:1,val:-19,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000059,src:000000,time:19325,execs:1320,op:arith8,pos:5,val:+9,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000060,src:000000,time:19709,execs:1346,op:arith8,pos:5,val:-17[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000061,src:000000,time:21296,execs:1424,op:arith8,pos:6,val:-22,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000062,src:000000,time:21567,execs:1446,op:arith8,pos:6,val:-28,+cov[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-fixed-timeout-diag/libxml2/queue/id:000063,src:000000,time:21772,execs:1465,op:arith8,pos:6,val:+33,+cov[0m
+[?25h[1;91m
+
++++ Testing aborted programmatically +++
+[0m[1;93m[!] [0mTime limit was reached
+[1;94m[*] [0mStatistics: 62 new corpus items found, 19.64% coverage achieved, 0 crashes saved, 0 timeouts saved, total runtime 0 days, 0 hrs, 0 min, 30 sec[0m
+[1;92m[+] [0mfastresume.bin successfully written with 563272 bytes.[0m
+[1;94m[*] [0mcon_exec_cnt: 0[0m
+[1;94m[*] [0mcon_exec_cnt_total: ~[0m
+[1;92m[+] [0mWe're done here. Have a nice day!
+[0m

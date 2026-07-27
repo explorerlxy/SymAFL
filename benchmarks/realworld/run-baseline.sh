@@ -10,7 +10,7 @@ source "$SYMAFL_ROOT/scripts/symafl-env.sh"
 REALWORLD_ROOT="${REALWORLD_ROOT:-/media/hahafish/Data/ForUbuntu/test/Realworld}"
 AFL_OUT_BASE="${AFL_OUT_BASE:-/tmp/symafl-realworld}"
 FUZZ_SECONDS="${FUZZ_SECONDS:-60}"
-FUZZ_TIMEOUT="${FUZZ_TIMEOUT:-2000+}"
+FUZZ_TIMEOUT="${FUZZ_TIMEOUT:-2000}"
 
 TARGETS=(zstd xz openjpeg libtiff libxml2 sqlite)
 

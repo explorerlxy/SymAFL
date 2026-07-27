@@ -1,0 +1,2 @@
+8693f2c5eaa4696d99c4dedf5f1f7e1e59ed7f535c42eb6a58640662da700d27  /media/hahafish/Data/ForUbuntu/test/Realworld/sqlite/seeds/malformed
+1f6c9f88f9f013b943ea2578bd5c8b03d98b7c63cc201a1b4441c373bde836d8  /media/hahafish/Data/ForUbuntu/test/Realworld/sqlite/seeds/valid

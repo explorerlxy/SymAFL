@@ -44,7 +44,9 @@ benchmarks/realworld/run-baseline.sh all
 The script clones and pins each upstream source, builds a static library with
 RSan Clang and Full LTO, links the final binary with SafeStack + SymCC + QSYM,
 verifies instrumentation, runs valid/malformed direct-input smoke tests, and
-then starts a bounded `afl-fuzz -K` campaign.
+then starts a bounded `afl-fuzz -K` campaign. The default execution timeout is
+fixed at 2000 ms; do not use AFL's `+` downscaling for concolic candidates
+unless a separate calibration study justifies it.
 
 ## Metrics
 
