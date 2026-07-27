@@ -25,6 +25,10 @@ calibration to 5–7 ms. Direct follow-up timing in [mode-timing/](mode-timing/)
 shows that average concolic execution costs about **535.66 ms for XZ** and
 **27.65 ms for libxml2**, versus concrete calibration means of **5.166 ms**
 and **3.251 ms**. That is approximately **103.7×** and **8.50×** respectively.
+A further control in [aflcc-timing/](aflcc-timing/) shows that binaries built
+with the original AFL++ compiler are much faster still: **10,523 exec/s for
+XZ** and **7,165 exec/s for libxml2**, versus 112 and 223 exec/s for the
+SymAFL binaries in concrete-off mode.
 Admitted concolic executions therefore could not finish within the downscaled
 5–7 ms timeout. Timeouts are deliberately not counted as clean
 no-coverage-gain feedback, so those branches were not pruned either.

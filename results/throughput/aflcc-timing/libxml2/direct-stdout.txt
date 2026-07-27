@@ -1,0 +1,57 @@
+{
+  "binary": "/media/hahafish/Data/ForUbuntu/test/Realworld/libxml2/build/libxml2-aflcc",
+  "concolic_reps": 0,
+  "concrete_reps": 30,
+  "inputs": [
+    {
+      "concolic": {
+        "returncodes": [],
+        "timeouts": 0
+      },
+      "concrete": {
+        "cpu_mean_ms": 0.45476666666666665,
+        "cpu_median_ms": 0.45949999999999985,
+        "n_ok": 30,
+        "returncodes": [
+          0
+        ],
+        "timeouts": 0,
+        "wall_max_ms": 1.4239040028769523,
+        "wall_mean_ms": 1.2581696661072783,
+        "wall_median_ms": 1.2444669991964474,
+        "wall_min_ms": 1.2093099940102547
+      },
+      "input": "/media/hahafish/Data/ForUbuntu/test/Realworld/libxml2/seeds/valid",
+      "ratio_cpu_mean": null,
+      "ratio_wall_mean": null,
+      "ratio_wall_median": null,
+      "size_bytes": 30
+    },
+    {
+      "concolic": {
+        "returncodes": [],
+        "timeouts": 0
+      },
+      "concrete": {
+        "cpu_mean_ms": 0.44076666666666675,
+        "cpu_median_ms": 0.42699999999999855,
+        "n_ok": 30,
+        "returncodes": [
+          1
+        ],
+        "timeouts": 0,
+        "wall_max_ms": 1.3138150097802281,
+        "wall_mean_ms": 1.2431312337866984,
+        "wall_median_ms": 1.2352694975561462,
+        "wall_min_ms": 1.1996820103377104
+      },
+      "input": "/media/hahafish/Data/ForUbuntu/test/Realworld/libxml2/seeds/malformed",
+      "ratio_cpu_mean": null,
+      "ratio_wall_mean": null,
+      "ratio_wall_median": null,
+      "size_bytes": 16
+    }
+  ],
+  "target": "libxml2-aflcc",
+  "timeout_s": 30.0
+}
