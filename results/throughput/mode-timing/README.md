@@ -2,6 +2,17 @@
 
 Date: 2026-07-27
 
+> **Correction (2026-07-27, added with
+> [symbolic-cost-breakdown](../symbolic-cost-breakdown/README.md)):** the XZ
+> standalone concolic numbers here are means across seeds of very different
+> path depths. The valid seed alone is ≈ **3,594 ms** concolic (168× its
+> concrete 21.4 ms) and dies with a runtime `FATAL` (`expr.h:443` bit-width
+> mismatch); mutants measured 32–415 ms. The AFL in-situ 535.66 ms figure
+> likewise mixes path depths and includes executions cut off by the 2000 ms
+> timeout. See the cost-breakdown analysis for per-seed numbers and the cause
+> decomposition (per-branch `to_string()` dedup + eager Z3 simplify ≈ 92% of
+> XZ concolic CPU).
+
 This directory contains direct mode-timing measurements for the question:
 “How much slower is concolic execution than concrete execution for XZ/liblzma
 and libxml2?”

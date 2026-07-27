@@ -1,0 +1,15 @@
+TSC_HZ 4185631079
+CPU_NS 37000000
+CPU_CYCLES_EST 154868350
+sym _sym_get_parameter_expression 325 10493
+sym _sym_get_return_expression 85 2338
+sym _sym_initialize 1 193439
+sym _sym_memcpy 24 9284
+sym _sym_memset 20 2772
+sym _sym_notify_basic_block 26338 808096
+sym _sym_notify_call 141 112723
+sym _sym_notify_ret 141 23375
+sym _sym_read_memory 8288 319073
+sym _sym_set_parameter_expression 340 9869
+sym _sym_set_return_expression 175 5209
+sym _sym_write_memory 9997 304941
