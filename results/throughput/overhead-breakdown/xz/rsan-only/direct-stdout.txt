@@ -1,0 +1,57 @@
+{
+  "binary": "/media/hahafish/Data/ForUbuntu/test/Realworld/xz/build/xz-rsan-only",
+  "concolic_reps": 0,
+  "concrete_reps": 30,
+  "inputs": [
+    {
+      "concolic": {
+        "returncodes": [],
+        "timeouts": 0
+      },
+      "concrete": {
+        "cpu_mean_ms": 14.452866666666665,
+        "cpu_median_ms": 14.27500000000001,
+        "n_ok": 30,
+        "returncodes": [
+          0
+        ],
+        "timeouts": 0,
+        "wall_max_ms": 31.860888993833214,
+        "wall_mean_ms": 16.820196567762952,
+        "wall_median_ms": 15.719703995273449,
+        "wall_min_ms": 15.675752001698129
+      },
+      "input": "/media/hahafish/Data/ForUbuntu/test/Realworld/xz/seeds/valid",
+      "ratio_cpu_mean": null,
+      "ratio_wall_mean": null,
+      "ratio_wall_median": null,
+      "size_bytes": 228
+    },
+    {
+      "concolic": {
+        "returncodes": [],
+        "timeouts": 0
+      },
+      "concrete": {
+        "cpu_mean_ms": 11.685233333333333,
+        "cpu_median_ms": 11.597000000000023,
+        "n_ok": 30,
+        "returncodes": [
+          1
+        ],
+        "timeouts": 0,
+        "wall_max_ms": 32.464425996295176,
+        "wall_mean_ms": 16.37034169883312,
+        "wall_median_ms": 15.749068501463626,
+        "wall_min_ms": 15.5692340049427
+      },
+      "input": "/media/hahafish/Data/ForUbuntu/test/Realworld/xz/seeds/malformed",
+      "ratio_cpu_mean": null,
+      "ratio_wall_mean": null,
+      "ratio_wall_median": null,
+      "size_bytes": 16
+    }
+  ],
+  "target": "xz-rsan-only",
+  "timeout_s": 30.0
+}

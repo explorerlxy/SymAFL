@@ -1,0 +1,57 @@
+{
+  "binary": "/media/hahafish/Data/ForUbuntu/test/Realworld/libxml2/build/libxml2-symcc-only",
+  "concolic_reps": 0,
+  "concrete_reps": 30,
+  "inputs": [
+    {
+      "concolic": {
+        "returncodes": [],
+        "timeouts": 0
+      },
+      "concrete": {
+        "cpu_mean_ms": 1.4645333333333332,
+        "cpu_median_ms": 1.4440000000000008,
+        "n_ok": 30,
+        "returncodes": [
+          0
+        ],
+        "timeouts": 0,
+        "wall_max_ms": 8.68257600814104,
+        "wall_mean_ms": 8.3047142654929,
+        "wall_median_ms": 8.264386502560228,
+        "wall_min_ms": 8.144574996549636
+      },
+      "input": "/media/hahafish/Data/ForUbuntu/test/Realworld/libxml2/seeds/valid",
+      "ratio_cpu_mean": null,
+      "ratio_wall_mean": null,
+      "ratio_wall_median": null,
+      "size_bytes": 30
+    },
+    {
+      "concolic": {
+        "returncodes": [],
+        "timeouts": 0
+      },
+      "concrete": {
+        "cpu_mean_ms": 1.4589333333333334,
+        "cpu_median_ms": 1.4249999999999958,
+        "n_ok": 30,
+        "returncodes": [
+          1
+        ],
+        "timeouts": 0,
+        "wall_max_ms": 8.741216995986179,
+        "wall_mean_ms": 8.292163399164565,
+        "wall_median_ms": 8.268018500530161,
+        "wall_min_ms": 8.167841006070375
+      },
+      "input": "/media/hahafish/Data/ForUbuntu/test/Realworld/libxml2/seeds/malformed",
+      "ratio_cpu_mean": null,
+      "ratio_wall_mean": null,
+      "ratio_wall_median": null,
+      "size_bytes": 16
+    }
+  ],
+  "target": "libxml2-symcc-only",
+  "timeout_s": 30.0
+}

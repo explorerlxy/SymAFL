@@ -1,0 +1,61 @@
+[1;92m[+] [0mEnabled environment variable AFL_SKIP_BIN_CHECK with value 1[0m
+[1;92m[+] [0mEnabled environment variable AFL_SKIP_CPUFREQ with value 1[0m
+[1;92m[+] [0mEnabled environment variable AFL_NO_UI with value 1[0m
+[1;92m[+] [0mEnabled environment variable AFL_PATH with value /media/hahafish/Data/ForUbuntu/SymAFL/AFLplusplus[0m
+[0;36mafl-fuzz++4.32c[0m based on afl by Michal Zalewski and a large online community
+[1;92m[+] [0mAFL++ is maintained by Marc "van Hauser" Heuse, Dominik Maier, Andrea Fioraldi and Heiko "hexcoder" Eißfeldt[0m
+[1;92m[+] [0mAFL++ is open source, get it at https://github.com/AFLplusplus/AFLplusplus[0m
+[1;92m[+] [0mNOTE: AFL++ >= v3 has changed defaults and behaviours - see README.md[0m
+[1;94m[*] [0mGetting to work...[0m
+[1;92m[+] [0mUsing exploration-based constant power schedule (EXPLORE)[0m
+[1;92m[+] [0mEnabled testcache with 50 MB[0m
+[1;92m[+] [0mGenerating fuzz data with a length of min=1 max=1048576[0m
+[1;94m[*] [0mChecking core_pattern...[0m
+[1;92m[+] [0mDisabling the UI because AFL_NO_UI is set.[0m
+[1;92m[+] [0mYou have 14 CPU cores and 6 runnable tasks (utilization: 43%).[0m
+[1;92m[+] [0mTry parallel jobs - see docs/fuzzing_in_depth.md#c-using-multiple-cores[0m
+[1;94m[*] [0mSetting up output directories...[0m
+[1;94m[*] [0mChecking CPU core loadout...[0m
+[1;92m[+] [0mFound a free CPU core, try binding to #0.[0m
+[1;93m[!] [1;97mWARNING: [0mno -M main node found. It is recommended to run exactly one main instance.[0m
+[1;94m[*] [0mValidating target binary...[0m
+[1;94m[*] [0mScanning '/media/hahafish/Data/ForUbuntu/test/Realworld/libxml2/seeds'...[0m
+[1;94m[*] [0mCreating hard links for all input files...[0m
+[1;92m[+] [0mLoaded a total of 2 seeds.[0m
+[1;94m[*] [0mNo auto-generated dictionary tokens to reuse.[0m
+[1;94m[*] [0mAttempting dry run with 'id:000000,time:0,execs:0,orig:malformed'...[0m
+[1;94m[*] [0mSpinning up the fork server...[0m
+[1;93m[!] [1;97mWARNING: [0mOld fork server model is used by the target, this still works though.[0m
+[1;92m[+] [0mAll right - old fork server is up.[0m
+[1;90m    len = 16, map size = 3893, exec speed = 416 us, hash = ac809707a3b86ba7
+[0m[1;94m[*] [0mAttempting dry run with 'id:000001,time:0,execs:0,orig:valid'...[0m
+[1;90m    len = 30, map size = 4152, exec speed = 381 us, hash = 4e2e184d58659ee7
+[0m[1;92m[+] [0mAll test cases processed.[0m
+[1;92m[+] [0mHere are some useful stats:
+
+[1;90m    Test case count : [0m2 favored, 0 variable, 0 ignored, 2 total
+[1;90m       Bitmap range : [0m3893 to 4152 bits (average: 4022.50 bits)
+[1;90m        Exec timing : [0m381 to 416 us (average: 398 us)
+[0m
+[1;94m[*] [0m-t option specified. We'll use an exec timeout of 2000 ms.[0m
+[1;92m[+] [0mAll set and ready to roll![0m
+[1;94m[*] [0mEntering queue cycle 1
+[0m
+[1;94m[*] [0mFuzzing test case #0 (2 total, 0 crashes saved, state: started :-), mode=explore, perf_score=100, weight=1, favorite=1, was_fuzzed=0, exec_us=416, hits=0, map=3893, ascii=0, run_time=0:00:00:00)...[0m
+[1;93m[!] [1;97mWARNING: [0minstability detected during calibration: /tmp/symafl-realworld/libxml2-symcc-only-20260727-065919/libxml2/queue/id:000347,src:000000,time:9171,execs:26264,op:havoc,rep:12[0m
+[1;94m[*] [0mFuzzing test case #157 (444 total, 0 crashes saved, state: started :-), mode=explore, perf_score=100, weight=1, favorite=1, was_fuzzed=0, exec_us=367, hits=0, map=4023, ascii=0, run_time=0:00:00:19)...[0m
+[1;94m[*] [0mFuzzing test case #199 (444 total, 0 crashes saved, state: started :-), mode=explore, perf_score=100, weight=2, favorite=1, was_fuzzed=0, exec_us=364, hits=0, map=4364, ascii=0, run_time=0:00:00:19)...[0m
+[1;94m[*] [0mFuzzing test case #425 (446 total, 0 crashes saved, state: started :-), mode=explore, perf_score=100, weight=1, favorite=1, was_fuzzed=0, exec_us=332, hits=0, map=3726, ascii=0, run_time=0:00:00:19)...[0m
+[1;94m[*] [0mFuzzing test case #472 (489 total, 0 crashes saved, state: started :-), mode=explore, perf_score=100, weight=1, favorite=1, was_fuzzed=0, exec_us=288, hits=0, map=2719, ascii=0, run_time=0:00:00:23)...[0m
+[1;94m[*] [0mFuzzing test case #1 (490 total, 0 crashes saved, state: started :-), mode=explore, perf_score=100, weight=2, favorite=1, was_fuzzed=0, exec_us=381, hits=0, map=4152, ascii=0, run_time=0:00:00:23)...[0m
+[1;94m[*] [0mFuzzing test case #538 (553 total, 0 crashes saved, state: started :-), mode=explore, perf_score=100, weight=1, favorite=1, was_fuzzed=0, exec_us=368, hits=0, map=4292, ascii=0, run_time=0:00:00:28)...[0m
+[?25h[1;91m
+
++++ Testing aborted programmatically +++
+[0m[1;93m[!] [0mTime limit was reached
+[1;94m[*] [0mStatistics: 559 new corpus items found, 13.91% coverage achieved, 0 crashes saved, 0 timeouts saved, total runtime 0 days, 0 hrs, 0 min, 30 sec[0m
+[1;92m[+] [0mfastresume.bin successfully written with 1168537 bytes.[0m
+[1;94m[*] [0mcon_exec_cnt: 83700[0m
+[1;94m[*] [0mcon_exec_cnt_total: 1609615.384615[0m
+[1;92m[+] [0mWe're done here. Have a nice day!
+[0m

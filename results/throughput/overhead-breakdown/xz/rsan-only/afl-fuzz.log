@@ -1,0 +1,47 @@
+[1;92m[+] [0mEnabled environment variable AFL_SKIP_BIN_CHECK with value 1[0m
+[1;92m[+] [0mEnabled environment variable AFL_SKIP_CPUFREQ with value 1[0m
+[1;92m[+] [0mEnabled environment variable AFL_NO_UI with value 1[0m
+[1;92m[+] [0mEnabled environment variable AFL_PATH with value /media/hahafish/Data/ForUbuntu/SymAFL/AFLplusplus[0m
+[0;36mafl-fuzz++4.32c[0m based on afl by Michal Zalewski and a large online community
+[1;92m[+] [0mAFL++ is maintained by Marc "van Hauser" Heuse, Dominik Maier, Andrea Fioraldi and Heiko "hexcoder" Eißfeldt[0m
+[1;92m[+] [0mAFL++ is open source, get it at https://github.com/AFLplusplus/AFLplusplus[0m
+[1;92m[+] [0mNOTE: AFL++ >= v3 has changed defaults and behaviours - see README.md[0m
+[1;94m[*] [0mGetting to work...[0m
+[1;92m[+] [0mUsing exploration-based constant power schedule (EXPLORE)[0m
+[1;92m[+] [0mEnabled testcache with 50 MB[0m
+[1;92m[+] [0mGenerating fuzz data with a length of min=1 max=1048576[0m
+[1;94m[*] [0mChecking core_pattern...[0m
+[1;92m[+] [0mDisabling the UI because AFL_NO_UI is set.[0m
+[1;92m[+] [0mYou have 14 CPU cores and 1 runnable tasks (utilization: 7%).[0m
+[1;92m[+] [0mTry parallel jobs - see docs/fuzzing_in_depth.md#c-using-multiple-cores[0m
+[1;94m[*] [0mSetting up output directories...[0m
+[1;94m[*] [0mChecking CPU core loadout...[0m
+[1;92m[+] [0mFound a free CPU core, try binding to #0.[0m
+[1;93m[!] [1;97mWARNING: [0mno -M main node found. It is recommended to run exactly one main instance.[0m
+[1;94m[*] [0mValidating target binary...[0m
+[1;94m[*] [0mScanning '/media/hahafish/Data/ForUbuntu/test/Realworld/xz/seeds'...[0m
+[1;94m[*] [0mCreating hard links for all input files...[0m
+[1;92m[+] [0mLoaded a total of 2 seeds.[0m
+[1;94m[*] [0mNo auto-generated dictionary tokens to reuse.[0m
+[1;94m[*] [0mAttempting dry run with 'id:000000,time:0,execs:0,orig:malformed'...[0m
+[1;94m[*] [0mSpinning up the fork server...[0m
+
+[1;91m[-] [0mHmm, looks like the target binary terminated before we could complete a
+handshake with the injected code. You can try the following:
+
+    - The target binary crashes because necessary runtime conditions it needs
+      are not met. Try to:
+      1. Run again with AFL_DEBUG=1 set and check the output of the target
+         binary for clues.
+      2. Run again with AFL_DEBUG=1 and 'ulimit -c unlimited' and analyze the
+         generated core dump.
+
+    - Possibly the target requires a huge coverage map and has CTORS.
+      Retry with setting AFL_MAP_SIZE=10000000.
+
+Otherwise there is a horrible bug in the fuzzer.
+Poke the Awesome Fuzzing Discord for troubleshooting tips.
+[?25h[0m[1;91m
+[-] PROGRAM ABORT : [0mFork server handshake failed[1;91m
+         Location : [0mafl_fsrv_start(), src/afl-forkserver.c:1687
+
