@@ -1,0 +1,174 @@
+{
+  "binary": "/media/hahafish/Data/ForUbuntu/test/Realworld/xz/build/xz-symafl",
+  "concolic_reps": 7,
+  "concrete_reps": 20,
+  "inputs": [
+    {
+      "concolic": {
+        "cpu_mean_ms": 3545.416285714286,
+        "cpu_median_ms": 3527.3220000000015,
+        "n_ok": 7,
+        "returncodes": [
+          255
+        ],
+        "timeouts": 0,
+        "wall_max_ms": 3673.753940995084,
+        "wall_mean_ms": 3594.2873294282304,
+        "wall_median_ms": 3572.838870997657,
+        "wall_min_ms": 3571.7528440000024
+      },
+      "concrete": {
+        "cpu_mean_ms": 15.44375,
+        "cpu_median_ms": 14.995000000000092,
+        "n_ok": 20,
+        "returncodes": [
+          0
+        ],
+        "timeouts": 0,
+        "wall_max_ms": 32.130504012457095,
+        "wall_mean_ms": 21.38270034774905,
+        "wall_median_ms": 15.790699493663851,
+        "wall_min_ms": 15.639167992048897
+      },
+      "input": "/media/hahafish/Data/ForUbuntu/test/Realworld/xz/seeds/valid",
+      "ratio_cpu_mean": 229.56965022836332,
+      "ratio_wall_mean": 168.09323756934188,
+      "ratio_wall_median": 226.2622293858032,
+      "size_bytes": 228
+    },
+    {
+      "concolic": {
+        "cpu_mean_ms": 27.96099999999971,
+        "cpu_median_ms": 27.730999999999284,
+        "n_ok": 7,
+        "returncodes": [
+          1
+        ],
+        "timeouts": 0,
+        "wall_max_ms": 31.973413992091082,
+        "wall_mean_ms": 31.79913471103646,
+        "wall_median_ms": 31.745921005494893,
+        "wall_min_ms": 31.66157699888572
+      },
+      "concrete": {
+        "cpu_mean_ms": 12.083349999999982,
+        "cpu_median_ms": 11.891499999999056,
+        "n_ok": 20,
+        "returncodes": [
+          1
+        ],
+        "timeouts": 0,
+        "wall_max_ms": 16.12802699673921,
+        "wall_mean_ms": 15.738631299609551,
+        "wall_median_ms": 15.679527001339011,
+        "wall_min_ms": 15.548549999948591
+      },
+      "input": "/media/hahafish/Data/ForUbuntu/test/Realworld/xz/seeds/malformed",
+      "ratio_cpu_mean": 2.3140106013646675,
+      "ratio_wall_mean": 2.020451086609122,
+      "ratio_wall_median": 2.024673384776456,
+      "size_bytes": 16
+    },
+    {
+      "concolic": {
+        "cpu_mean_ms": 29.61542857142823,
+        "cpu_median_ms": 29.493000000002212,
+        "n_ok": 7,
+        "returncodes": [
+          1
+        ],
+        "timeouts": 0,
+        "wall_max_ms": 32.59102799347602,
+        "wall_mean_ms": 32.138899282602196,
+        "wall_median_ms": 32.08837899728678,
+        "wall_min_ms": 31.859083988820203
+      },
+      "concrete": {
+        "cpu_mean_ms": 12.383799999999923,
+        "cpu_median_ms": 12.362999999998792,
+        "n_ok": 20,
+        "returncodes": [
+          1
+        ],
+        "timeouts": 0,
+        "wall_max_ms": 16.43820499884896,
+        "wall_mean_ms": 15.851831050531473,
+        "wall_median_ms": 15.765520496643148,
+        "wall_min_ms": 15.556541999103501
+      },
+      "input": "/tmp/symafl-realworld/xz-fixed-timeout-diag/xz/queue/id:000002,src:000001,time:2033,execs:18,op:quick,pos:6,+cov",
+      "ratio_cpu_mean": 2.3914653475854273,
+      "ratio_wall_mean": 2.0274565872013035,
+      "ratio_wall_median": 2.0353517033655284,
+      "size_bytes": 228
+    },
+    {
+      "concolic": {
+        "cpu_mean_ms": 248.99514285714324,
+        "cpu_median_ms": 249.16299999999936,
+        "n_ok": 7,
+        "returncodes": [
+          1
+        ],
+        "timeouts": 0,
+        "wall_max_ms": 264.69327000086196,
+        "wall_mean_ms": 264.54010257397647,
+        "wall_median_ms": 264.5400400069775,
+        "wall_min_ms": 264.38670900824945
+      },
+      "concrete": {
+        "cpu_mean_ms": 15.957000000000045,
+        "cpu_median_ms": 15.954499999999427,
+        "n_ok": 20,
+        "returncodes": [
+          1
+        ],
+        "timeouts": 0,
+        "wall_max_ms": 32.473020008183084,
+        "wall_mean_ms": 30.297305500425864,
+        "wall_median_ms": 31.803606005269103,
+        "wall_min_ms": 16.114187994389795
+      },
+      "input": "/tmp/symafl-realworld/xz-fixed-timeout-diag/xz/queue/id:000010,src:000001,time:11681,execs:141,op:quick,pos:33,+cov",
+      "ratio_cpu_mean": 15.604132534758572,
+      "ratio_wall_mean": 8.731472921585652,
+      "ratio_wall_median": 8.317925959815673,
+      "size_bytes": 228
+    },
+    {
+      "concolic": {
+        "cpu_mean_ms": 383.63328571428616,
+        "cpu_median_ms": 381.49899999999803,
+        "n_ok": 7,
+        "returncodes": [
+          1
+        ],
+        "timeouts": 0,
+        "wall_max_ms": 416.32451000623405,
+        "wall_mean_ms": 415.0382821410728,
+        "wall_median_ms": 414.8294359911233,
+        "wall_min_ms": 414.7163099987665
+      },
+      "concrete": {
+        "cpu_mean_ms": 15.598899999999816,
+        "cpu_median_ms": 15.654000000004942,
+        "n_ok": 20,
+        "returncodes": [
+          1
+        ],
+        "timeouts": 0,
+        "wall_max_ms": 32.58166000887286,
+        "wall_mean_ms": 27.009248649846995,
+        "wall_median_ms": 31.701146501291078,
+        "wall_min_ms": 15.528518008068204
+      },
+      "input": "/tmp/symafl-realworld/xz-fixed-timeout-diag/xz/queue/id:000020,src:000001,time:17092,execs:272,op:quick,pos:44,+cov",
+      "ratio_cpu_mean": 24.593611454287846,
+      "ratio_wall_mean": 15.366524538379705,
+      "ratio_wall_median": 13.085628810750702,
+      "size_bytes": 228
+    }
+  ],
+  "target": "xz",
+  "timeout_s": 30.0
+}

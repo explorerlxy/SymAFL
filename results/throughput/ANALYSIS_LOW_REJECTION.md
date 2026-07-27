@@ -21,10 +21,13 @@ coverage gains or enter the queue.
 
 The dominant artifact was AFL timeout auto-scaling. The runner used
 `-t 2000+`; the `+` allowed AFL to reduce the timeout from concrete dry-run
-calibration to 5–7 ms. Admitted concolic executions often need much longer
-than that, so they were killed before producing useful coverage or a `.pct`
-trace. Timeouts are deliberately not counted as clean no-coverage-gain
-feedback, so those branches were not pruned either.
+calibration to 5–7 ms. Direct follow-up timing in [mode-timing/](mode-timing/)
+shows that average concolic execution costs about **535.66 ms for XZ** and
+**27.65 ms for libxml2**, versus concrete calibration means of **5.166 ms**
+and **3.251 ms**. That is approximately **103.7×** and **8.50×** respectively.
+Admitted concolic executions therefore could not finish within the downscaled
+5–7 ms timeout. Timeouts are deliberately not counted as clean
+no-coverage-gain feedback, so those branches were not pruned either.
 
 ## Original 60-second runs
 
