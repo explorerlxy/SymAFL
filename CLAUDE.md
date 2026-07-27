@@ -58,11 +58,11 @@ Use the guide closest to the code being changed; these files own subsystem-speci
 
 5. **BMI2 elimination**: RSan originally used `llvm.x86.bmi.bzhi.64` for pointer tag extraction. This was replaced with generic `SHL+SHR` in 4 locations in SafeStack.cpp to avoid `X86ISD::BZHI` instruction selection crashes.
 
-6. **5 shared-memory channels**: coverage bitmap (`__afl_area_ptr`), output directory (`__out_dir`), symbolic mode switch (`__symbolic`), queue entry ID (`__queue_entry_id`), insert depth (`__insert_depth`).
+6. **6 shared-memory channels**: coverage bitmap (`__afl_area_ptr`), output directory (`__out_dir`), symbolic mode switch (`__symbolic`), queue entry ID (`__queue_entry_id`), insert depth (`__insert_depth`), `.pct` dump gate (`__dump_trace`).
 
 7. **Dual-mode runtime**: `reset_gconfig()` in the QSYM runtime reads `*__symbolic` before each fork. `0` → `inputFileDescriptor = -1` (pure concrete, no symbolic computation). `1` → `inputFileDescriptor = 0` (stdin is symbolic, Z3 solves path constraints).
 
-8. **SymAFL-v1 execution contract**: PCBT-admitted candidates execute once in concolic mode (`*__symbolic = 1`). Coverage-gaining executions are queued and inserted into the PCBT; executions without coverage gain increment the branch's low-value counter. There is no focus-fuzzing fallback in this version.
+8. **SymAFL-v1 execution contract**: PCBT-admitted candidates execute once in concolic mode (`*__symbolic = 1`) with trace dumping disabled (`*__dump_trace = 0`), so non-gaining executions never touch Z3 or write `.pct` files. Coverage-gaining candidates are re-executed concolically with dumping enabled, and their trace is inserted only when the replay bitmap matches the first run's. Executions without coverage gain increment the branch's low-value counter. There is no focus-fuzzing fallback in this version.
 
 ## Build Commands
 
@@ -198,9 +198,10 @@ afl-fuzz -i seeds -o /tmp/output -K -m none -t 1000+ -- ./target
 
 ### Run Standalone (without AFL++)
 
-The QSYM runtime attaches five SysV SHM segments whose IDs it reads from
+The QSYM runtime attaches six SysV SHM segments whose IDs it reads from
 `__AFL_SHM_ID`, `__AFL_SHM_OUTDIR_ENV_ID`, `__AFL_SHM_SYMBOLIC_ENV_ID`,
-`__AFL_SHM_QUEUE_ENTRY_ID`, and `__AFL_SHM_INSERT_DEPTH__ID`. Without them the
+`__AFL_SHM_QUEUE_ENTRY_ID`, `__AFL_SHM_INSERT_DEPTH__ID`, and
+`__AFL_SHM_DUMP_TRACE_ID`. Without them the
 attach calls are no-ops and the binary falls back to its static
 `__afl_area_initial` bitmap; without fd 198/199 the forkserver handshake is
 skipped, so the target **can be executed directly**:

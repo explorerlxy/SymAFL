@@ -24,7 +24,7 @@ platform:
 components:
   aflplusplus:
     repository: explorerlxy/SymAFL-AFLplusplus
-    commit: "35ba2f2be8618f5ef306d0ce8ff4927c5881e085"   # must equal submodule gitlink SHA
+    commit: "26703e40cdc020a13fe0c09eeeafa253a0d31a6b"   # must equal submodule gitlink SHA
     pcbt_api: pcbt-api-v1
   rsan:
     repository: explorerlxy/SymAFL-RSan
@@ -32,7 +32,7 @@ components:
     compiler_contract: rsan-symcc-lto-v1
   symcc:
     repository: explorerlxy/SymAFL-Symcc
-    commit: "7b02256aef4892a013c5ee50f8806c66a3c2f6f6"
+    commit: "58bee1ca9f5f1687ba64366aba83891880847877"
     runtime_contract: qsym-shm-v1
 
 contracts:
@@ -49,8 +49,9 @@ contracts:
     - __AFL_SHM_SYMBOLIC_ENV_ID     # concrete/symbolic switch (__symbolic)
     - __AFL_SHM_QUEUE_ENTRY_ID      # current queue entry (__queue_entry_id)
     - __AFL_SHM_INSERT_DEPTH__ID    # first new constraint (__insert_depth); spelling intentional
+    - __AFL_SHM_DUMP_TRACE_ID       # .pct dump gate (__dump_trace); 0 skips dump on normal exits
   trace_artifact: queue/.pct-<queue-entry-id>
-  insert_depth_semantics: first-new-solver-assertion-index
+  insert_depth_semantics: first-new-traced-constraint-index
   check_input_return_values:
     "0":  no PCBT root yet; candidate initializes exploration
     ">0": unexplored branch found; value is the insertion depth
