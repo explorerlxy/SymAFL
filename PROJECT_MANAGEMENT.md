@@ -24,7 +24,7 @@ explorerlxy/SymAFL                  ←→  SymAFL-integrated/          ← 集�
 | 仓库 | 角色 | 基线 main | upstream（只读同步源） |
 |---|---|---|---|
 | `SymAFL` | 集成 manifest：submodule SHA、脚本、测试、文档、实验配置 | `v0.1.0-baseline` | — |
-| `SymAFL-AFLplusplus` | PCBT、`-K` 筛选、focus fuzzing、队列逻辑 | `7a995cb8` | `AFLplusplus/AFLplusplus` |
+| `SymAFL-AFLplusplus` | PCBT、`-K` 筛选、低价值分支剪枝、队列逻辑 | `7a995cb8` | `AFLplusplus/AFLplusplus` |
 | `SymAFL-RSan` | LLVM 16 CodeGen、SafeStack、SymCC pass、TCMalloc、链接器 | `3403b14db` | 无（`original-rsan` 分支 + `upstream-base` tag 记录来源） |
 | `SymAFL-Symcc` | 平直化单仓库：compiler + vendored symcc-rt/qsym 运行时 | `a5fa0858` | `eurecom-s3/symcc` |
 

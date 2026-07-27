@@ -12,7 +12,7 @@ SymAFL is a hybrid fuzzing system that integrates **AFL++** (coverage-guided fuz
 SymAFL/
 ├── AFLplusplus/          # Modified AFL++ with PCBT integration
 │   ├── src/
-│   │   ├── PathConTree.cpp      # ~1800 LOC — PCBT core: CheckInput, InsertTrace, FocusCheck
+│   │   ├── PathConTree.cpp      # PCBT core: CheckInput, InsertTrace, low-value branch pruning
 │   │   ├── afl-fuzz.c           # Main fuzzer loop — symcc_mode guard, PCBT calls
 │   │   └── afl-fuzz-run.c       # fuzz_one(): CheckInput → execute → InsertTrace
 │   └── include/
@@ -61,6 +61,8 @@ Use the guide closest to the code being changed; these files own subsystem-speci
 6. **5 shared-memory channels**: coverage bitmap (`__afl_area_ptr`), output directory (`__out_dir`), symbolic mode switch (`__symbolic`), queue entry ID (`__queue_entry_id`), insert depth (`__insert_depth`).
 
 7. **Dual-mode runtime**: `reset_gconfig()` in the QSYM runtime reads `*__symbolic` before each fork. `0` → `inputFileDescriptor = -1` (pure concrete, no symbolic computation). `1` → `inputFileDescriptor = 0` (stdin is symbolic, Z3 solves path constraints).
+
+8. **SymAFL-v1 execution contract**: PCBT-admitted candidates execute once in concolic mode (`*__symbolic = 1`). Coverage-gaining executions are queued and inserted into the PCBT; executions without coverage gain increment the branch's low-value counter. There is no focus-fuzzing fallback in this version.
 
 ## Build Commands
 
@@ -228,7 +230,7 @@ After making changes, verify:
 
 | Change | File |
 |--------|------|
-| PCBT algorithm (CheckInput/InsertTrace/FocusCheck) | `AFLplusplus/src/PathConTree.cpp` |
+| PCBT algorithm (CheckInput/InsertTrace/low-value branch pruning) | `AFLplusplus/src/PathConTree.cpp` |
 | PCBT C API | `AFLplusplus/include/PathConTree.hpp` |
 | AFL fuzz loop integration | `AFLplusplus/src/afl-fuzz-run.c` |
 | New AFL stats/settings for SymAFL | `AFLplusplus/include/afl-fuzz.h` |

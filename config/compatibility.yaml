@@ -11,7 +11,7 @@
 #=============================================================================
 
 schema_version: 1
-symafl_version: 0.1.0
+symafl_version: 1.0.0
 protocol_version: symafl-abi-v1
 trace_format_version: pct-smtlib-v1
 
@@ -24,11 +24,11 @@ platform:
 components:
   aflplusplus:
     repository: explorerlxy/SymAFL-AFLplusplus
-    commit: "7a995cb80e85ab02bd1b113e151f3bd45a6cd8c5"   # must equal submodule gitlink SHA
+    commit: "35ba2f2be8618f5ef306d0ce8ff4927c5881e085"   # must equal submodule gitlink SHA
     pcbt_api: pcbt-api-v1
   rsan:
     repository: explorerlxy/SymAFL-RSan
-    commit: "98cba4e44f7ade7caf18f6dd5c43891bf75d7216"
+    commit: "5d0f67fd610b6023fa3eec48ecba4879c274f93e"
     compiler_contract: rsan-symcc-lto-v1
   symcc:
     repository: explorerlxy/SymAFL-Symcc
@@ -54,5 +54,5 @@ contracts:
   check_input_return_values:
     "0":  no PCBT root yet; candidate initializes exploration
     ">0": unexplored branch found; value is the insertion depth
-    "-1": candidate opens no new branch; skip concrete execution
+    "-1": candidate opens no new branch; skip target execution
     "-2": exploration exhausted; finalize PCBT and leave screening mode

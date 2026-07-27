@@ -25,7 +25,7 @@ The project is designed to bind memory-safety detection and path exploration: RS
                                                                       ▼
  AFL++ mutator ──► PCBT/Z3 pre-screen ─┬─ reject: no concrete run
                                       │
-                                      └─ accept: forkserver execution
+                                      └─ accept: concolic forkserver execution
                                                    │
                               concrete/symbolic mode via shared memory
                                                    │
@@ -39,7 +39,7 @@ The project is designed to bind memory-safety detection and path exploration: RS
 | Component | Role | Important locations |
 |---|---|---|
 | **AFL++** | Mutation, queue management, forkserver coordination, and coverage accounting. | [`AFLplusplus/src/afl-fuzz-run.c`](AFLplusplus/src/afl-fuzz-run.c), [`AFLplusplus/src/afl-fuzz.c`](AFLplusplus/src/afl-fuzz.c) |
-| **PathConTree** | Z3-backed binary tree of explored path constraints; performs pre-screening and focus-mode exploration. | [`AFLplusplus/src/PathConTree.cpp`](AFLplusplus/src/PathConTree.cpp), [`AFLplusplus/include/PathConTree.hpp`](AFLplusplus/include/PathConTree.hpp) |
+| **PathConTree** | Z3-backed binary tree of explored path constraints; performs pre-execution candidate screening and low-value branch pruning. | [`AFLplusplus/src/PathConTree.cpp`](AFLplusplus/src/PathConTree.cpp), [`AFLplusplus/include/PathConTree.hpp`](AFLplusplus/include/PathConTree.hpp) |
 | **RSan** | SafeStack-derived spatial and temporal memory-error detection using allocation metadata and tagged pointers. | [`RSan/llvm-project-16/llvm/lib/CodeGen/SafeStack.cpp`](RSan/llvm-project-16/llvm/lib/CodeGen/SafeStack.cpp) |
 | **SymCC pass** | Compiler-based symbolic expression tracking, path-constraint collection, AFL instrumentation, and libc interception. | [`RSan/llvm-project-16/llvm/lib/CodeGen/SymCC/`](RSan/llvm-project-16/llvm/lib/CodeGen/SymCC/) |
 | **SymCC runtime** | QSYM/Simple symbolic runtime, Z3 solving, AFL forkserver, shared-memory attachment, and `.pct` persistence. | [`symcc/runtime/src/backends/qsym/Runtime.cpp`](symcc/runtime/src/backends/qsym/Runtime.cpp) |
@@ -186,7 +186,7 @@ For each mutation, AFL++ calls `path_con_tree_check_input()` before writing the 
 5. The target executes under the AFL forkserver. If the candidate is retained, its incremental SMT trace is inserted into the PCBT.
 6. When the current tree reaches its configured exploration limit, AFL++ can emit a final PCBT visualization and leave SymAFL screening mode.
 
-The PCBT API is exposed through [`PathConTree.hpp`](AFLplusplus/include/PathConTree.hpp). Internally, [`PathConNode::check`](AFLplusplus/src/PathConTree.cpp) performs the per-node solver check, `CheckInput()` returns the insertion decision, and `InsertTrace()` parses the target's SMT-LIB trace and extends the tree. Focus mode narrows solving and mutation to a selected unexplored target node when normal fuzzing stops making progress.
+The PCBT API is exposed through [`PathConTree.hpp`](AFLplusplus/include/PathConTree.hpp). Internally, [`PathConNode::check`](AFLplusplus/src/PathConTree.cpp) performs the per-node solver check, `CheckInput()` returns the insertion decision, and `InsertTrace()` parses the target's SMT-LIB trace and extends the tree. SymAFL-v1 has no focus mode: an admitted candidate executes once in concolic mode, a coverage-gaining execution is queued and inserted into the PCBT, and an execution without coverage gain increments that branch's low-value counter until the configured exploration threshold is reached.
 
 ### Return values used by `CheckInput()`
 
@@ -222,7 +222,7 @@ A successful SymAFL run may produce:
 
 - `output/queue/.pct-XXXXXX`: incremental SMT-LIB constraints saved for a queue entry, especially on a crash or abnormal exit.
 - `output/queue/.PathConTree-*`: PCBT snapshots/final visualizations, depending on the configured visualization backend.
-- `output/sym_mode_stats`: counts and timing for pre-screening, concrete execution, focus execution, and solver activity.
+- `output/sym_mode_stats`: counts and timing for PCBT candidate screening, concolic execution, trace insertion, no-coverage-gain feedback, and low-value branch saturation. Candidate throughput is `pcbt_candidate_cnt / pcbt_wall_tm` and includes candidates rejected without a target execution.
 
 A `.pct-*` file can be inspected with Z3:
 

@@ -617,71 +617,73 @@ afl-fuzz -i seeds -o /tmp/output -K -m none -t 1000+ -- ./read
 │       ↓                                                 │
 │  2. Havoc 变异 (多次)                                    │
 │       ↓                                                 │
-│  3. 对于每个变异种子:                                     │
+│  3. 对于每个变异候选:                                   │
 │       ├── pathcon_tree_check_input(input, size)         │
 │       │    ├── 遍历 Path Constraint Binary Tree       │
 │       │    ├── 对每个节点: solver.check(pathCon ∧ input) │
-│       │    ├── 若触发新分支 → 返回 depth (> 0)            │
-│       │    └── 若未触发新分支 → 返回 0                    │
+│       │    ├── 触发未探索分支 → 返回 depth (> 0)          │
+│       │    ├── 未触发新分支 → 返回 -1                    │
+│       │    └── PCBT 已充分探索 → 返回 -2                 │
 │       │                                                 │
-│       ├── depth == 0 → 跳过 (无趣种子)                   │
+│       ├── depth < 0 → 跳过 (不启动目标程序)              │
 │       │                                                 │
-│       └── depth > 0 → 具体执行 (有趣种子)                 │
-│            ├── 写入 *__symbolic = 0 (切换为具体模式)        │
+│       └── depth >= 0 → concolic execution               │
+│            ├── 写入 *__symbolic = 1 (stdin 符号化)        │
 │            ├── fuzz_run_target()                        │
 │            │    ├── Forkserver fork 前调用 reset_gconfig() │
-│            │    │   └── 读取 *__symbolic→0: NoInput 模式   │
-│            │    │       inputFileDescriptor = -1 (不符号化) │
-│            │    ├── 子进程执行目标程序 (纯具体模式)          │
+│            │    │   └── 读取 *__symbolic→1: StdinInput   │
+│            │    │       inputFileDescriptor = 0          │
+│            │    ├── 子进程执行目标程序并收集路径约束        │
 │            │    ├── RSan 内存错误检测 (SIGTRAP)           │
 │            │    ├── AFL 覆盖率位图更新                    │
-│            │    └── 异常退出时保存 Solver 状态 (.pct)     │
+│            │    └── 退出时保存增量 Solver 状态 (.pct)     │
+│            ├── 恢复 *__symbolic = 0                      │
 │            ├── save_if_interesting()                    │
-│            │    ├── 检查覆盖率位图是否有增益               │
-│            │    ├── 有增益 → 种子入队 + PCBT插入           │
-│            │    │    └── pathcon_tree_insert_trace()     │
-│            │    └── 无增益 → 丢弃种子 + 删除 .pct 文件     │
-│            └── 写入 *__symbolic = 1 (恢复符号模式)         │
+│            │    ├── 有覆盖增益 → 入队 + InsertTrace      │
+│            │    └── 无覆盖增益 → 丢弃候选并增加分支低价值计数 │
 │                                                         │
 │  4. 每入队 200 个种子：PCBT 可视化输出                    │
 │       └── visualize_pathcon_tree(tree, "pct_snapshot")  │
 └─────────────────────────────────────────────────────────┘
 ```
 
-### 5.4 聚焦模式 (Focus Mode)
+### 5.4 低价值分支剪枝
 
-当常规 fuzzing cycle 达到可配置阈值而无覆盖率增益时，自动切换至聚焦模式：
+SymAFL-v1 不包含 focus fuzzing。PCBT 只用于执行前筛选；为防止循环或递归符号分支导致树无限膨胀，每个尚未插入的右侧分支都维护一个“准入后无覆盖增益”计数器：
 
 ```
-聚焦模式流程:
-1. SelectFocusTarget()
-   ├── 遍历 non-negated PathConNodes
-   ├── 根据 Rcnt 排除低价值约束 (循环次数、输入长度等)
-   ├── 优先选择 Rcnt==0 的分支
-   └── 选择聚焦目标节点 TargetNode
+分支反馈流程:
+1. CheckInput() 发现候选可到达某个未探索分支
+   ├── 记录 insertPoint
+   └── 不提前增加低价值计数
 
-2. SetupFocusMode()
-   ├── 构建 KeyPathConSet (回溯关键约束)
-   ├── 构建 KeySymVarSet (约束相关的符号变量闭包)
-   ├── 创建局部 solver (仅包含目标节点相关的约束)
-   └── 记录 key/all 比例 (验证程序局部性)
+2. 候选完成 concolic execution
+   ├── 覆盖率有增益
+   │   ├── 候选入队
+   │   └── InsertTrace() 将该分支纳入 PCBT
+   └── 覆盖率无增益
+       ├── 删除未使用的 .pct trace
+       └── insertPoint 对应分支 no_cov_gain 计数 +1
 
-3. FocusCheckInput()
-   ├── 基于 KeySymVarSet 缩减的测试空间进行变异
-   ├── 增量 solver.check() 验证
-   └── 发现新分支 → 返回 0 (退出聚焦模式)
+3. 某分支 no_cov_gain 计数达到 MAX_ALLOWED_RIGHT_CHILD_CNT
+   ├── 将该分支视为已充分探索的低价值分支
+   ├── 向上传播 expCnt，标记已耗尽的子树
+   └── 后续 CheckInput() 不再选择该分支
 ```
 
-### 5.5 吞吐率对比预期
+该机制只统计“通过 PCBT 筛选并正常执行后仍无覆盖率增益”的候选；崩溃、超时等异常反馈不按低价值分支处理。
 
-| 模式 | 操作 | 吞吐率 |
-|------|------|--------|
-| 原生 AFL++ | 具体执行 | ~700 Wps (exec/s) |
-| SymCC 编译 + 具体模式 | 具体执行 | ~50 Wps |
-| SymCC 编译 + 符号模式 | 符号执行 | ~500 ps |
-| SymAFL CheckInput | 约束求解预筛 | ~100 Wps |
+### 5.5 候选吞吐量定义
 
-**关键分析**：CheckInput 吞吐率 (~100 Wps) 与具体执行 (~50-700 Wps) 在同一量级，但 CheckInput 避免了大量无价值的程序具体执行。如果变异种子中仅 1% 是有趣的，SymAFL 模式可将有效测试吞吐率提升约 **100 倍**。
+SymAFL-v1 的吞吐量以 PCBT 处理的候选数为准，而不是目标程序实际执行次数：
+
+```
+candidate_throughput = pcbt_candidate_cnt / pcbt_wall_tm
+
+pcbt_candidate_cnt = 被准入候选 + 被拒绝候选 + 触发 PCBT 耗尽的候选
+```
+
+`pcbt_concolic_exec_cnt`、拒绝率、CheckInput 耗时和无覆盖增益计数用于解释吞吐量来源；PCBT 耗尽后的普通 AFL 执行阶段必须单独统计，不能与 PCBT 活跃阶段混合。
 
 ---
 
