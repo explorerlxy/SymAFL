@@ -36,6 +36,9 @@ source scripts/symafl-env.sh
 benchmarks/realworld/run-realworld.sh zstd       # one target
 benchmarks/realworld/run-realworld.sh all        # sequential full suite
 FUZZ_SECONDS=120 benchmarks/realworld/run-realworld.sh sqlite
+
+# After targets are built, run the preliminary no-PCBT concrete baseline
+benchmarks/realworld/run-baseline.sh all
 ```
 
 The script clones and pins each upstream source, builds a static library with
