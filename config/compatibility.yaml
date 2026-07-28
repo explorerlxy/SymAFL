@@ -24,11 +24,11 @@ platform:
 components:
   aflplusplus:
     repository: explorerlxy/SymAFL-AFLplusplus
-    commit: "26703e40cdc020a13fe0c09eeeafa253a0d31a6b"   # must equal submodule gitlink SHA
+    commit: "33f41ae8d83f3e463721733820948b51985ff6e7"   # must equal submodule gitlink SHA
     pcbt_api: pcbt-api-v1
   rsan:
     repository: explorerlxy/SymAFL-RSan
-    commit: "5d0f67fd610b6023fa3eec48ecba4879c274f93e"
+    commit: "a7f7b668b9225fbad26b8fd762ee57dc8d8b16a3"
     compiler_contract: rsan-symcc-lto-v1
   symcc:
     repository: explorerlxy/SymAFL-Symcc
