@@ -64,13 +64,58 @@ splice). Re-evaluate only the suffix. On deep trees (XZ) this is the
 difference between O(path) and O(changed region) per candidate — the expected
 order-of-magnitude term, and it works for both Stage 0 and Stage 1.
 
-### Stage 3 — native JIT for hot predicates (optional, only if profiling says so)
+### Stage 3 — whole-tree JIT with hot-patching (user's formulation, refined)
 
-Emit x86-64 per node (asmjit or hand-rolled for ~30 opcodes), cache per node
-at InsertTrace, screen via indirect calls. Estimated additional 2–5× over the
-VM for hot nodes, at the price of W^X bookkeeping and multi-word code for
-widths > 64. Do not start here: the VM already removes the solver framework
-overhead, which is the dominant term.
+One machine-code function isomorphic to the PCBT: args are
+`(const uint8_t *input, uint32_t len)`, body is an if-else chain mirroring
+the tree. Each tree node is a stable-address block:
+
+```
+block(N):  eval pred(N) into a flags/condition register
+           jtrue  <left block or REJECT leaf>
+           jmp    <right block or frontier stub>
+```
+
+Unexplored frontier = a 6-byte stub `mov eax, node_id ; ret`
+(`B8 imm32 C3`), which is ≥ the 5-byte `jmp rel32` needed to patch it.
+Admission returns the admitting node's id (0 = reject, −2 = exhausted
+root), giving the C++ side everything needed for `insert_depth` and `rCnt`
+bookkeeping.
+
+**Incremental update is monotonic hot-patching** — only three patch types
+ever occur, each at most once per site:
+
+1. **Frontier extension** (InsertTrace): emit the new constraint chain as
+   blocks (each new node = one eval block + one fresh frontier stub), then
+   patch the frontier stub into `jmp rel32` to the new chain head
+   (emit-before-patch publish; x86 cross-modifying code is self-coherent;
+   the fuzzer is single-threaded).
+2. **Low-value saturation** (rCnt threshold): patch the opportunity branch
+   to a shared `return REJECT` stub.
+3. **Subtree exhaustion** (expCnt cascade): patch the exhausted subtree's
+   entry to `return REJECT`; when the root saturates, patch the function
+   entry to `return −2`.
+
+Code lives in an append-only arena (RWX, or a dual-mapped RW/RX pair if
+W^X hygiene is desired); block addresses are stable for the campaign, which
+also keeps the Stage-2 prefix cache compatible: `CheckInput` may enter the
+function at any mid-tree node block, not just the root.
+
+**Risk split.** Tree-dispatch code (branches, stubs, patches) is trivially
+correct; the real correctness surface is native emission of predicate
+semantics (BV corner cases from the checklist). Mitigation is layered
+degradation: tree dispatch is JIT'd first while predicates call the Stage-1
+VM; full native predicate emission comes last, and any node with an
+unsupported opcode falls back to the VM (or is marked `opaque`). The C++
+tree remains the authoritative metadata (symVars, rCnt, expCnt, ids); the
+machine code is a derived accelerator that can be discarded and rebuilt.
+
+**Economics.** Root-prefix nodes are walked by every candidate, so per-node
+compile cost amortizes over thousands of screenings; the expected speedup
+over the VM is dispatch/branch-predictor locality (≈10–30%), while the
+dominant terms remain solver removal (100–1000×) and the prefix cache
+(10–100× on deep trees). JIT is polish, not the main term — but the
+patch-based design makes it incremental and cheap.
 
 ## Semantics that MUST be preserved (SMT-LIB bit-vector corner cases)
 
