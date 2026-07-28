@@ -85,6 +85,18 @@ come from P3 bypassing `solver.add` (no Z3 solver-side preprocessing/aux
 naming) — constraints are dumped as directly materialized. Both forms parse
 and drive screening successfully.
 
+## P6 fix (follow-up, same day)
+
+The xz concolic FATAL was root-caused to the funnel-shift helpers in
+`RuntimeCommon.cpp` (liblzma `rotr_32` → `llvm.fshl/fshr`): a 32-bit shift
+amount applied to a 64-bit concatenation (width assertion), plus an invalid
+negative-width result extract and swapped fshr operands. Fixed in symcc
+`96ca4fa`: xz valid-seed concolic now completes with rc=0 in 0.10 s with
+output identical to concrete mode; xz -K run healthy (43 insertions,
+mismatch 3/46). CheckInput over the large xz tree (2.9/s) remains the xz
+bottleneck; large-trace replays can hit the 2000 ms timeout because the
+replay pays trace+dump (counted as replay mismatches).
+
 ## Where the remaining cost is
 
 - Target-side concolic tracing is now pure qsym bookkeeping (XZ: 10,397

@@ -32,7 +32,7 @@ components:
     compiler_contract: rsan-symcc-lto-v1
   symcc:
     repository: explorerlxy/SymAFL-Symcc
-    commit: "58bee1ca9f5f1687ba64366aba83891880847877"
+    commit: "96ca4faa72c96edd279f6f4f0c62ee5818cb6a58"
     runtime_contract: qsym-shm-v1
 
 contracts:
