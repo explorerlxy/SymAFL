@@ -70,11 +70,65 @@ struct Node {               // ~16 B
 - Ring sizing: prefix serialization is skipped, so records cover only the
   suffix from `insert_depth`; a few MB suffice. Overflow sets a flag; AFL
   treats the trace as failed insertion (same handling as today's missing
-  `.pct`).
+  `.pct`). (Superseded by the persistent-arena variant below.)
 - PathConTree rebuilds expressions from the opcode table (into its existing
   `z3::context`, or directly into the Stage-1 evaluation VM of
   [CHECKINPUT_COMPILED_EVAL](CHECKINPUT_COMPILED_EVAL.md) — no Z3 either
   way). `CheckInput`/`InsertTrace`/rCnt logic unchanged.
+
+## Zero-copy persistent arena (user refinement, 2026-07-28)
+
+Refines the transport from a per-run ring buffer (consumed and discarded) to
+a **persistent append-only arena that doubles as the PCBT's predicate
+storage**:
+
+- The target writes `BranchRec`/`Node` structs directly at
+  `shm_base + write_off`. A small SHM header
+  `{u64 write_base; u64 write_end; u32 overflow; u32 seq}` carries the
+  position; the fuzzer resets `write_end = write_base` before each fork.
+  The forkserver executes one child at a time, so there is a single writer
+  and no locking; the fuzzer reads after `waitpid`.
+- **Retention is gain-gated**: after a no-gain execution `write_base` is
+  left unchanged, so the next run overwrites the previous run's records.
+  Only coverage-gaining traces advance `write_base` past their records.
+  Arena occupancy is therefore bounded by the *tree's* predicate bytes, not
+  by the number of executions — the common no-gain case stays
+  allocation-free. This is exactly the "advance the write address only on
+  coverage gain" rule from the user's proposal.
+- **PCBT nodes point into the arena**: `NodeV2.pred` becomes
+  `(offset, len)` — a view over the post-order `Node` sequence, which *is*
+  the Stage-1 VM bytecode. `InsertTrace` degenerates to tree-metadata
+  updates: no copy, no parse, no materialization. The same view feeds the
+  prefix cache and the JIT tier unchanged.
+- **Offsets, not pointers**: `shmat` addresses differ between the fuzzer
+  and target processes (`shmat(id, NULL, 0)` gives no address guarantee), so
+  all intra-record links (`child1/child2`) and tree references are
+  segment-relative offsets/indices. The wire format is fixed-width
+  little-endian with explicit alignment; no host pointers, enums, or
+  padding-dependent layouts cross the boundary. Within the forkserver
+  process family the mapping is inherited, so addresses agree there.
+- **Within-run dedup stays**: the pointer-identity memoization (same
+  `ExprRef` → same node index) is still required — loop hotspots would
+  otherwise flood the arena. Cross-run structural dedup is optional
+  fuzzer-side polish: because the arena is append-only and addresses are
+  stable, a new node may reference older runs' bytes directly. The Merkle
+  hash-per-node scheme from SymSan (see
+  [SYMSAN_PAPER_ANALYSIS](../analysis/SYMSAN_PAPER_ANALYSIS.md)) is the
+  identity mechanism to adopt here; it also yields O(1) predicate equality.
+- **Byte-read fusion (`uload`)**: at ingestion, `concat(Read k+1, Read k)`
+  chains collapse into a single `(offset, len)` leaf (SymSan's `uload`
+  operator; measured 13.8:1 over concat in the paper). This directly
+  cancels the concat-tree bloat created by the per-byte shadow memory.
+- **Overflow** sets the header flag; the fuzzer treats the run as a failed
+  insertion (same as a missing `.pct` today). Sizing: with within-run dedup
+  and `insert_depth` gating, a gaining run's records are ~MB-class; a
+  64–256 MB arena covers campaigns with thousands of inserts. Crash
+  prefixes are valid by construction (records are written at branch-notify
+  time, before the branch executes), preserving vuln→path binding.
+- **Text encodings are rejected** as the wire format: strings reintroduce
+  the 82.7% `to_string` cost plus fuzzer-side parsing. The binary struct
+  stream is simultaneously the persistence format and the evaluation
+  bytecode — one encoding, two consumers.
 
 ## Keep vs delete
 
